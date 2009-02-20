@@ -1,0 +1,10 @@
+<plugin>
+	<name>Interwiki</name>
+	<version>0.01</version>
+	<url>http://ayu.commun.jp/</url>
+	<author>ayu</author>
+	<authorurl>http://ayu.commun.jp/</authorurl>
+	<license>Apache License 2.0</license>
+	<description>Interwiki for Habari</description>
+</plugin>
+
