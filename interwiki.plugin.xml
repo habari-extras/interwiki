@@ -1,10 +1,10 @@
-<plugin>
-	<name>Interwiki</name>
+<?xml version="1.0" encoding="utf-8" ?>
+<pluggable type="plugin">
+	<name>Habmin Bar</name>
+	<license url="http://www.apache.org/licenses/LICENSE-2.0.html">Apache Software License 2.0</license>
+	<author url="http://ayu.commun.jp/">ayu</author>
 	<version>0.01</version>
 	<url>http://ayu.commun.jp/</url>
-	<author>ayu</author>
-	<authorurl>http://ayu.commun.jp/</authorurl>
-	<license>Apache License 2.0</license>
-	<description>Interwiki for Habari</description>
-</plugin>
-
+	<description><![CDATA[Interwiki for Habari.]]></description>
+	<copyright>2009</copyright>
+</pluggable>

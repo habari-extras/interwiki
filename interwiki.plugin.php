@@ -16,25 +16,6 @@ class Interwiki extends Plugin
     private $parser;
 
     /**
-     * info
-     *
-     * @access public
-     * @return array
-     */
-    function info()
-    {
-        return array(
-          'name' => 'Interwiki',
-          'version' => '0.01',
-          'url' => 'http://ayu.commun.jp/',
-          'author' => 'ayu',
-          'authorurl' => 'http://ayu.commun.jp/',
-          'license' => 'Apache License 2.0',
-          'description' => 'Interwiki for Habari',
-        );
-    }
-
-    /**
      * action: init
      *
      * @access public
