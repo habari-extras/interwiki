@@ -3,7 +3,8 @@
 	<name>Interwiki</name>
 	<license url="http://www.apache.org/licenses/LICENSE-2.0.html">Apache Software License 2.0</license>
 	<author url="http://ayu.commun.jp/">ayu</author>
-	<version>0.01</version>
+	<author url="http://redalt.com/">Owen Winkler</author>
+	<version>0.02</version>
 	<url>http://ayu.commun.jp/</url>
 	<description><![CDATA[Allow users to specify Interwiki links in Habari post content, which Habari will convert to real links.]]></description>
 	<copyright>2009</copyright>
