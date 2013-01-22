@@ -41,6 +41,13 @@ class InterwikiParser
 		$wiki = null;
 		$words = array();
 		$lang = $this->lang_default;
+		if(preg_match('#^(.+)\|(.+)$#', $keyword, $matches)) {
+			$linkword = $matches[2];
+			$keyword = $matches[1];
+		}
+		else {
+			$linkword = '';
+		}
 		$w = explode(':', $keyword);
 		for ($i = 0; $i < count($w); $i++) {
 			// Site URL
@@ -75,7 +82,12 @@ class InterwikiParser
 		$url = str_replace('{word}', join(':', $encoded_words), $url);
 		$url = str_replace('{lang}', $lang, $url);
 		$url = str_replace('{rawword}', join(':', $words), $url);
-		return array('wiki' => $wiki, 'word' => join(':', $words), 'url' => $url, 'lang' => $lang);
+
+		if($linkword == '') {
+			$linkword = implode(':', $words);
+		}
+
+		return array('wiki' => $wiki, 'word' => $linkword, 'url' => $url, 'lang' => $lang);
 	}
 
 	function setInterwiki($interwiki)
