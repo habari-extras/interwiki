@@ -41,7 +41,7 @@ class InterwikiParser
 		$wiki = null;
 		$words = array();
 		$lang = $this->lang_default;
-		if(preg_match('#^(.+)\|(.+)$#', $keyword, $matches)) {
+		if(preg_match('#^(.+)\s*\|\s*(.+)\s*$#', $keyword, $matches)) {
 			$linkword = $matches[2];
 			$keyword = $matches[1];
 		}

@@ -7,4 +7,5 @@
 	<url>http://ayu.commun.jp/</url>
 	<description><![CDATA[Allow users to specify Interwiki links in Habari post content, which Habari will convert to real links.]]></description>
 	<copyright>2009</copyright>
+	<guid>df59c0ab-1e6d-11dd-b5d6-001b210f913f</guid>
 </pluggable> 

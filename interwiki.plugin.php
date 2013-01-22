@@ -11,7 +11,7 @@
 // include Interwiki Parser
 require_once('interwiki_parser.php');
 
-class Interwiki extends Plugin
+class Interwiki extends Plugin implements FormStorage
 {
 	private $parser;
 
@@ -26,6 +26,9 @@ class Interwiki extends Plugin
 		// Interwiki Parser
 		$this->parser = new InterwikiParser();
 		$this->parser->setEncoding('UTF-8');
+		$this->parser->setDefaultLang(Options::get('interwiki__lang_default', 'en'));
+		$this->parser->setDefaultWiki(Options::get('interwiki__wiki_default', $this->parser->getDefaultWiki()));
+		$this->parser->setInterwiki(Options::get('interwiki__wikis', $this->parser->getInterwiki()));
 	}
 
 	public function action_plugin_activation($file)
@@ -36,45 +39,24 @@ class Interwiki extends Plugin
 		$this->parser = new InterwikiParser();
 		$this->parser->setEncoding('UTF-8');
 
-		Options::set('interwiki:interwiki', serialize($this->parser->getInterwiki()));
-		Options::set('interwiki:lang_default', 'en');
-		Options::set('interwiki:wiki_default', $this->parser->getDefaultWiki());
+		Options::set('interwiki__wikis', $this->parser->getInterwiki());
+		Options::set('interwiki__lang_default', 'en');
+		Options::set('interwiki__wiki_default', $this->parser->getDefaultWiki());
 	}
 
-	public function action_plugin_ui($plugin_id, $action)
+	public function configure()
 	{
-		if( $plugin_id != $this->plugin_id() ) return;
-		if( $action == _t('Configure') ) {
-			$interwiki = unserialize(Options::get('interwiki:interwiki'));
+		$interwiki = Options::get('interwiki__interwiki', $this->parser->getInterwiki());
+		$interwiki = array_combine(array_keys($interwiki), array_keys($interwiki));
+		$langs = $this->parser->getISO639();
+		$langs = array_combine($langs, $langs);
 
-			$ui = new FormUI(strtolower(get_class($this)));
-			$wiki_default = $ui->add('select', 'wiki_default', _t('Default Wiki'), array_keys($interwiki), Options::get('interwiki:wiki_default'));
-			$lang_default = $ui->add('select', 'lang_default', _t('Default Language'), $this->parser->getISO639(), Options::get('interwiki:lang_default'));
-			$ui->on_success(array($this, 'updated_config'));
-			$ui->out();
-		}
-	}
-
-	/**
-	 * FormUI callback
-	 *
-	 * @access public
-	 * @return boolean
-	 */
-	public function updated_config($ui)
-	{
-		return true;
-	}
-
-	/**
-	 * action: update_check
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function action_update_check()
-	{
-		Update::add('Interwiki', 'df59c0ab-1e6d-11dd-b5d6-001b210f913f', $this->info->version);
+		$ui = new FormUI(strtolower(get_class($this)));
+		$wiki_default = $ui->append(new FormControlSelect('wiki_default', 'interwiki__wiki_default', _t('Default Wiki'), $interwiki));
+		$lang_default = $ui->append(new FormControlSelect('lang_default', 'interwiki__lang_default', _t('Default Language'), $langs));
+		$wikis = $ui->append(new FormControlTextArea('interwiki__wikis', $this, _t('Wikis')));
+		$ui->append(new FormControlSubmit('submit', 'Submit'));
+		return $ui;
 	}
 
 	/**
@@ -94,17 +76,45 @@ class Interwiki extends Plugin
 	}
 
 	/**
-	 * filter: plugin_config
+	 * Stores a form value into the object
 	 *
-	 * @access public
-	 * @return array
+	 * @param string $key The name of a form component that will be stored
+	 * @param mixed $value The value of the form component to store
 	 */
-	public function filter_plugin_config($actions, $plugin_id)
+	function field_save($key, $value)
 	{
-		if( $plugin_id == $this->plugin_id() ) {
-			$actions[] = _t('Configure');
+		switch($key) {
+			case 'interwiki__wikis':
+				$lines = explode("\n", $value);
+				$wikis = array();
+				foreach($lines as $line) {
+					if(preg_match('#^\s*(\w+?)\s*\|\s*(.+?)\s*$#', $line, $matches)) {
+						$wikis[$matches[1]] = $matches[2];
+					}
+				}
+				Options::set('interwiki__wikis', $wikis);
+				break;
 		}
-		return $actions;
+	}
+
+	/**
+	 * Loads form values from an object
+	 *
+	 * @param string $key The name of a form component that will be loaded
+	 * @return mixed The stored value returned
+	 */
+	function field_load($key)
+	{
+		switch($key) {
+			case 'interwiki__wikis':
+				$out = '';
+				$wikis = Options::get('interwiki__wikis', $this->parser->getInterwiki());
+				foreach($wikis as $wikiname => $wiki) {
+					$out .= "{$wikiname} | {$wiki}\n";
+				}
+				return $out;
+				break;
+		}
 	}
 }
 
